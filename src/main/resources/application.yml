@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: movie-demo
+  data:
+    rest:
+      base-path: movie-adapter/api
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      jdbc:
+        batch_size: 500
+        order_inserts: true
+        order_updates: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            # see https://github.com/pgjdbc/pgjdbc/issues/1102
+            non_contextual_creation: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
+spring:
+  profiles: local
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/movie-adapter
+    username: postgres
+    password: admin
+---
+spring:
+  profiles: container
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://db:5432/movie-adapter
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
