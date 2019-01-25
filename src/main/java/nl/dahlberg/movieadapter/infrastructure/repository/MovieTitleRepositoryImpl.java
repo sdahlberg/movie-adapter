@@ -2,6 +2,8 @@ package nl.dahlberg.movieadapter.infrastructure.repository;
 
 import nl.dahlberg.movieadapter.domain.model.MovieTitle;
 import nl.dahlberg.movieadapter.domain.repository.MovieTitleRepositoryCustom;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -14,9 +16,12 @@ public class MovieTitleRepositoryImpl implements MovieTitleRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     @Transactional
     @Override
-    public void saveAllBatched(final Iterable<MovieTitle> movieTitles) {
+    public Iterable<MovieTitle> saveAllBatched(final Iterable<MovieTitle> movieTitles) {
         int i = 0;
         for (final MovieTitle movieTitle : movieTitles) {
             entityManager.persist(movieTitle);
@@ -26,6 +31,9 @@ public class MovieTitleRepositoryImpl implements MovieTitleRepositoryCustom {
                 entityManager.flush();
                 entityManager.clear();
             }
+
+            publisher.publishEvent(movieTitle);
         }
+        return movieTitles;
     }
 }

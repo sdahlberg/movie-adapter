@@ -14,10 +14,21 @@ spring:
         order_updates: true
     properties:
       hibernate:
+        default_schema: movie_adapter
         jdbc:
           lob:
             # see https://github.com/pgjdbc/pgjdbc/issues/1102
             non_contextual_creation: true
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: movie-title-exchange
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 
 management:
   endpoints:
@@ -30,7 +41,7 @@ spring:
   profiles: local
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/movie-adapter
+    url: jdbc:postgresql://localhost:5432/movie
     username: postgres
     password: admin
 ---
@@ -38,6 +49,6 @@ spring:
   profiles: container
   datasource:
     platform: postgres
-    url: jdbc:postgresql://db:5432/movie-adapter
+    url: jdbc:postgresql://movie-postgres:5432/movie
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}

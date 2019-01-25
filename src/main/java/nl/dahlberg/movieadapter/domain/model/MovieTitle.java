@@ -42,11 +42,9 @@ public class MovieTitle {
     private boolean isAdult;
 
     @Column(columnDefinition = "smallint")
-    //@Convert(converter = YearAttributeConverter.class)
     private Year startYear;
 
     @Column(columnDefinition = "smallint")
-    //@Convert(converter = YearAttributeConverter.class)
     private Year endYear;
 
     private int runtimeMinutes;
