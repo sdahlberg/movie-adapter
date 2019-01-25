@@ -1,3 +1,3 @@
 #!/bin/bash
 ./wait-for-it.sh db:5432 -t 15
-java -Dspring.profiles.active=container -jar app.jar
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dspring.profiles.active=container -jar app.jar
