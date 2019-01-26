@@ -38,6 +38,9 @@ public enum MovieTitleGenreMessage {
     private final String value;
 
     public static MovieTitleGenreMessage getByValue(final String value) {
+        if (value == null) {
+            return null;
+        }
         for (MovieTitleGenreMessage movieTitleGenreMessage : MovieTitleGenreMessage.values()) {
             if (movieTitleGenreMessage.value.equals(value)) {
                 return movieTitleGenreMessage;
