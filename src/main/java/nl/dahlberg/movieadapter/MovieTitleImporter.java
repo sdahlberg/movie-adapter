@@ -9,27 +9,26 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.stream.Stream;
 
 @lombok.AllArgsConstructor
 @Component
-public class MovieTitleProcessor {
+public class MovieTitleImporter {
     private final MovieTitleService movieTitleService;
     private final CsvFileImporter csvFileImporter;
     private final MovieTitlePublisher movieTitlePublisher;
 
-    public void fillDatabase() {
-        //final ClassPathResource resource = new ClassPathResource("imports/title-basics.tsv");
-        final ClassPathResource resource = new ClassPathResource("imports/test.tsv");
+    public void importMovieTitles(final InputStream inputStream) throws IOException {
+        final Stream<MovieTitle> movieTitleStream = csvFileImporter.importCsvStream(inputStream);
+        movieTitleService.addMovieTitles(movieTitleStream);
+    }
 
+    public void importTest() throws IOException {
         final long start = System.currentTimeMillis();
-        try {
-            final Stream<MovieTitle> movieTitleStream = csvFileImporter.importCsvStream(resource.getInputStream());
-            final Iterable<MovieTitle> movieTitles = movieTitleService.addMovieTitles(movieTitleStream);
-        } catch (IOException e) {
-            throw new IllegalStateException("Should be able to read title-basics.tsv", e);
-        }
-
+        final ClassPathResource resource = new ClassPathResource("imports/test.tsv");
+        final Stream<MovieTitle> movieTitleStream = csvFileImporter.importCsvStream(resource.getInputStream());
+        movieTitleService.addMovieTitles(movieTitleStream);
         System.out.println("Import finished in " + (System.currentTimeMillis() - start) + "ms.");
     }
 
